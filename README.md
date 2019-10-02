@@ -4,19 +4,45 @@ Script for developers to acquire their twitter Bearer Token
 ## Bellow are te steps as per the twitter Api documentation.
 
 ### Step 1: 
- Encode consumer key and secret The steps to encode an application’s consumer key and secret into a set of credentials to obtain a bearer token are:
+Encode consumer key and secret The steps to encode an application’s consumer key and secret into a set of credentials to obtain a bearer token are:
 
-URL encode the consumer key and the consumer secret according to RFC 1738. Note that at the time of writing, this will not actually change the consumer key and secret, but this step should still be performed in case the format of those values changes in the future. Concatenate the encoded consumer key, a colon character ”:”, and the encoded consumer secret into a single string. Base64 encode the string from the previous step. Below are example values showing the result of this algorithm. Note that the consumer secret used in this page has been disabled and will not work for real requests.
+URL encode the consumer key and the consumer secret according to RFC 1738. 
 
-Consumer key xvz1evFS4wEEPTGEFPHBog Consumer secret L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg RFC 1738 encoded consumer key (does not change) xvz1evFS4wEEPTGEFPHBog RFC 1738 encoded consumer secret (does not change) L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg Bearer token credentials xvz1evFS4wEEPTGEFPHBog:L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg Base64 encoded bearer token credentials :: eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJnNmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw== 
+Note that at the time of writing, this will not actually change the consumer key and secret, but this step should still be performed in case the format of those values changes in the future. 
+
+Concatenate the encoded consumer key, a colon character ”:”, and the encoded consumer secret into a single string. 
+
+Base64 encode the string from the previous step.
+
+Below are example values showing the result of this algorithm. 
+
+Note that the consumer secret used in this page has been disabled and will not work for real requests.
+
+Consumer key xvz1evFS4wEEPTGEFPHBog 
+
+Consumer secret L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg 
+
+RFC 1738 encoded consumer key (does not change) xvz1evFS4wEEPTGEFPHBog 
+
+RFC 1738 encoded consumer secret (does not change) L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg 
+
+Bearer token credentials xvz1evFS4wEEPTGEFPHBog:L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg 
+
+Base64 encoded bearer token credentials :: eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJnNmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw== 
 
 
 ### Step 2:
 Obtain a bearer token The value calculated in step 1 must be exchanged for a bearer token by issuing a request to POST oauth2 / token:
 
-The request must be a HTTP POST request. The request must include an Authorization header with the value of Basic <base64 encoded value from step 1>. The request must include a Content-Type header with the value of application/x-www-form-urlencoded;charset=UTF-8. The body of the request must be grant_type=client_credentials. Example request (Authorization header has been wrapped):
+The request must be a HTTP POST request. 
 
-POST /oauth2/token HTTP/1.1 Host: api.twitter.com User-Agent: My Twitter App v1.0.23 Authorization: Basic eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJn NmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw== Content-Type: application/x-www-form-urlencoded;charset=UTF-8 Content-Length: 29 Accept-Encoding: gzip
+The request must include an Authorization header with the value of Basic <base64 encoded value from step 1>. 
+
+The request must include a Content-Type header with the value of application/x-www-form-urlencoded;charset=UTF-8. 
+
+The body of the request must be grant_type=client_credentials. Example request (Authorization header has been wrapped):
+
+#### POST /oauth2/token HTTP/1.1 Host: api.twitter.com User-Agent: My Twitter App v1.0.23 Authorization: Basic eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJn NmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw== Content-Type: application/x-www-form-urlencoded;charset=UTF-8 Content-Length: 29 Accept-Encoding: gzip
 
 grant_type=client_credentials If the request was formatted correctly, the server will respond with a JSON-encoded payload:
 
