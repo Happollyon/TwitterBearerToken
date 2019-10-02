@@ -1,68 +1,68 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Script to healp Develpers acquiring their Bearer Token key
 
-## Available Scripts
+Bellow are te steps as per the twitter Api documentation.
 
-In the project directory, you can run:
+Step 1: Encode consumer key and secret
+The steps to encode an application’s consumer key and secret into a set of credentials to obtain a bearer token are:
 
-### `npm start`
+URL encode the consumer key and the consumer secret according to RFC 1738. Note that at the time of writing, this will not actually change the consumer key and secret, but this step should still be performed in case the format of those values changes in the future.
+Concatenate the encoded consumer key, a colon character ”:”, and the encoded consumer secret into a single string.
+Base64 encode the string from the previous step.
+Below are example values showing the result of this algorithm. Note that the consumer secret used in this page has been disabled and will not work for real requests.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Consumer key	xvz1evFS4wEEPTGEFPHBog
+Consumer secret	L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg
+RFC 1738 encoded consumer
+key (does not change)
+xvz1evFS4wEEPTGEFPHBog
+RFC 1738 encoded consumer
+secret (does not change)
+L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg
+Bearer token credentials	xvz1evFS4wEEPTGEFPHBog:L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg
+Base64 encoded bearer token credentials	:: eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJnNmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw==
+Step 2: Obtain a bearer token
+The value calculated in step 1 must be exchanged for a bearer token by issuing a request to POST oauth2 / token:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+The request must be a HTTP POST request.
+The request must include an Authorization header with the value of Basic <base64 encoded value from step 1>.
+The request must include a Content-Type header with the value of application/x-www-form-urlencoded;charset=UTF-8.
+The body of the request must be grant_type=client_credentials.
+Example request (Authorization header has been wrapped):
 
-### `npm test`
+POST /oauth2/token HTTP/1.1
+Host: api.twitter.com
+User-Agent: My Twitter App v1.0.23
+Authorization: Basic eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJn
+                     NmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw==
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Content-Length: 29
+Accept-Encoding: gzip
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+grant_type=client_credentials
+If the request was formatted correctly, the server will respond with a JSON-encoded payload:
 
-### `npm run build`
+Example response:
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+HTTP/1.1 200 OK
+Status: 200 OK
+Content-Type: application/json; charset=utf-8
+...
+Content-Encoding: gzip
+Content-Length: 140
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+{"token_type":"bearer","access_token":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2FAAAAAAAAAAAAAAAAAAAA%3DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+Applications should verify that the value associated with the token_type key of the returned object is bearer. The value associated with the access_token key is the bearer token.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Note that one bearer token is valid for an application at a time. Issuing another request with the same credentials to /oauth2/token will return the same token until it is invalidated.
 
-### `npm run eject`
+Step 3: Authenticate API requests with the bearer token
+The bearer token may be used to issue requests to API endpoints which support application-only auth. To use the bearer token, construct a normal HTTPS request and include an Authorization header with the value of Bearer <base64 bearer token value from step 2>. Signing is not required.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Example request (Authorization header has been wrapped):
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+GET /1.1/statuses/user_timeline.json?count=100&screen_name=twitterapi HTTP/1.1
+Host: api.twitter.com
+User-Agent: My Twitter App v1.0.23
+Authorization: Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2FAAAAAAAAAAAA
+                      AAAAAAAA%3DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Accept-Encoding: gzip
