@@ -1,6 +1,9 @@
 # TwitterBearerToken
 Script for developers to acquire their twitter Bearer Token
 
+##### You can visit theis link and insert your consumer and consumer secret key to obtain your bearer token
+#### http://wwww.fagnernunes.com/twitterToken
+
 ## Bellow are te steps as per the twitter Api documentation.
 
 ### Step 1: 
